@@ -67,15 +67,17 @@ namespace FormNazarRomanyuk
         {
             //select
             string nombre = this.lstpedidos.SelectedItem.ToString();
-            List<Pedido> datospedido = this.repo.GetPedidos(nombre);
-            foreach (Pedido pedido in datospedido)
-            {
-                this.txtcodigopedido.Text = pedido.CodigoPedido;
-                this.txtfechaentrega.Text = pedido.FechaEntrega;
-                this.txtformaenvio.Text = pedido.FormaEnvio;
-                this.txtimporte.Text = pedido.Importe.ToString();
 
-            }
+            //AQUI VA EL CODIGO CON EL PROCEDURE DE SP_DATOS_PEDIDO
+            //List<Pedido> datospedido = this.repo.GetPedidos(nombre);
+            //foreach (Pedido pedido in datospedido)
+            //{
+            //    this.txtcodigopedido.Text = pedido.CodigoPedido;
+            //    this.txtfechaentrega.Text = pedido.FechaEntrega;
+            //    this.txtformaenvio.Text = pedido.FormaEnvio;
+            //    this.txtimporte.Text = pedido.Importe.ToString();
+
+            //}
         }
     }
 }
