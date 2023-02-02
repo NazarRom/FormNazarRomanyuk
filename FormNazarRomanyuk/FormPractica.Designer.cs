@@ -230,6 +230,7 @@
             this.btnnuevopedido.TabIndex = 24;
             this.btnnuevopedido.Text = "Nuevo pedido";
             this.btnnuevopedido.UseVisualStyleBackColor = true;
+            this.btnnuevopedido.Click += new System.EventHandler(this.btnnuevopedido_Click);
             // 
             // btnmodificarcliente
             // 
@@ -248,6 +249,7 @@
             this.btneliminarpedido.TabIndex = 26;
             this.btneliminarpedido.Text = "Eliminar pedido";
             this.btneliminarpedido.UseVisualStyleBackColor = true;
+            this.btneliminarpedido.Click += new System.EventHandler(this.btneliminarpedido_Click);
             // 
             // txtcodigopedido
             // 

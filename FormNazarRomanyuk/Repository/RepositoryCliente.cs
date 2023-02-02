@@ -7,10 +7,11 @@ using System.Data.SqlClient;
 using FormNazarRomanyuk.Helpers;
 using FormNazarRomanyuk.Models;
 using System.Data;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 #region PROCEDURE
-//CREATE PROCEDURE SP_CLIENTES
+//CREATE PROCEDURE SP_EMPRESA
 //AS 
-//SELECT * FROM CLIENTES
+//SELECT EMPRESA FROM CLIENTES
 //GO
 
 
@@ -30,9 +31,28 @@ using System.Data;
 
 
 //CREATE PROCEDURE SP_DATO_PEDIDO
-//(@CODCLIENTE NVARCHAR(50))
+//(@CODPEDIDO NVARCHAR(50))
 //AS
-//SELECT * FROM PEDIDOS WHERE CODIGOCLIENTE = @CODCLIENTE
+//SELECT * FROM PEDIDOS WHERE CODIGOPEDIDO = @CODPEDIDO
+//GO
+
+//CREATE PROCEDURE SP_INSERT_PEDIDOS
+//(@CODPEDIDO NVARCHAR(50),
+//@NOMBREEMP NVARCHAR(50),
+//@FECHA DATE,
+//@FORMAENVIO NVARCHAR(50),
+//@IMPORTE INT)
+//AS
+//DECLARE @CODCLI NVARCHAR(50)
+//SELECT @CODCLI = CODIGOCLIENTE FROM CLIENTES WHERE EMPRESA = @NOMBREEMP
+//INSERT INTO PEDIDOS VALUES (@CODPEDIDO, @CODCLI, @FECHA, @FORMAENVIO, @IMPORTE)
+//GO
+
+
+//CREATE PROCEDURE SP_DELETE_PEDIDO
+//(@CODPED NVARCHAR(50))
+//AS
+//DELETE FROM PEDIDOS WHERE CODIGOPEDIDO = @CODPED
 //GO
 
 #endregion
@@ -117,13 +137,41 @@ namespace FormNazarRomanyuk.Repository
 
         }
 
-        public List<Pedido> GetPedidos(string nombre)
+
+        public List<string> GetPedidos(string codcliente)
         {
-            SqlParameter pamnombre = new SqlParameter("@NOMBRE", nombre);
+            SqlParameter pamnombre = new SqlParameter("@NOMBRE", codcliente);
             this.com.Parameters.Add(pamnombre);
 
             this.com.CommandType = CommandType.StoredProcedure;
             this.com.CommandText = "SP_PEDIDOS_CLIENTE";
+
+            this.cn.Open();
+            this.reader = this.com.ExecuteReader();
+
+            List<string> datospedido = new List<string>();
+            while (this.reader.Read())
+            {
+                string codigopedido = this.reader["CODIGOPEDIDO"].ToString();
+                datospedido.Add(codigopedido);
+
+            }
+
+            this.cn.Close();
+            this.reader.Close();
+            this.com.Parameters.Clear();
+
+            return datospedido;
+        }
+
+
+        public List<Pedido> GetDatosPedido(string codigo)
+        {
+            SqlParameter pamcodigo = new SqlParameter("@CODPEDIDO", codigo);
+            this.com.Parameters.Add(pamcodigo);
+
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_DATO_PEDIDO";
 
             this.cn.Open();
             this.reader = this.com.ExecuteReader();
@@ -153,6 +201,49 @@ namespace FormNazarRomanyuk.Repository
             return datospedido;
         }
 
+        public int InsertPedidos(string codped,string nombre, DateTime fecha, string formenvio, int importe)
+        {
+            SqlParameter pamcodped = new SqlParameter("@CODPEDIDO", codped);
+            this.com.Parameters.Add(pamcodped);
+
+            SqlParameter pamnombre = new SqlParameter("@NOMBREEMP", nombre);
+            this.com.Parameters.Add(pamnombre);
+
+            SqlParameter pamfecha = new SqlParameter("@FECHA", fecha);
+            this.com.Parameters.Add(pamfecha);
+
+            SqlParameter pamformenvio = new SqlParameter("@FORMAENVIO", formenvio);
+            this.com.Parameters.Add(pamformenvio);
+
+            SqlParameter pamimporte = new SqlParameter("@IMPORTE", importe);
+            this.com.Parameters.Add(pamimporte);
+
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_INSERT_PEDIDOS";
+
+            this.cn.Open();
+            int update = this.com.ExecuteNonQuery();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return update;
+
+        }
+
+
+        public int DeletePedido(string cod)
+        {
+            SqlParameter pamcod = new SqlParameter("@CODPED", cod);
+            this.com.Parameters.Add(pamcod);
+
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_DELETE_PEDIDO";
+
+            this.cn.Open();
+            int delete = this.com.ExecuteNonQuery();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return delete;
+        }
     }
 
 }
