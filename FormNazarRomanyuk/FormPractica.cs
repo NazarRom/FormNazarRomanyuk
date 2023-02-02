@@ -65,6 +65,7 @@ namespace FormNazarRomanyuk
 
         private void lstpedidos_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //select
             string nombre = this.lstpedidos.SelectedItem.ToString();
             List<Pedido> datospedido = this.repo.GetPedidos(nombre);
             foreach (Pedido pedido in datospedido)
